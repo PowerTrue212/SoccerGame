@@ -1,13 +1,14 @@
 ﻿#include "ball.h"
 #include "constants.h"
 #include "physicscollision.h"
+#include <cmath>
 
 Ball::Ball()
 {
-	velocity = QPointF(1, 0);
-	pos = QPointF(600, 100);
+   velocity = QPointF(0, 0);
+	pos = QPointF(Constants::WindowWidth/2, 100);
 	prevPos = pos;
-	acceleration = QPointF(0, 1);
+   acceleration = QPointF(0, Constants::Gravity);
 }
 
 void Ball::DrawBall(QPainter* painter) const
@@ -18,13 +19,26 @@ void Ball::DrawBall(QPainter* painter) const
 
 void Ball::Friction() {
 	if (!onGround) return;
-	velocity.rx() *= 0.9;
+   velocity.rx() *= Constants::BallGroundFriction;
 }
 
 void Ball::update()
 {
 	prevPos = pos;
 	velocity += acceleration;
+
+	if (!onGround) {
+		velocity *= Constants::BallAirDrag;
+	}
+	else {
+		velocity.rx() *= Constants::BallGroundFriction;
+	}
+
+	const double speed = std::hypot(velocity.x(), velocity.y());
+	if (speed > Constants::BallMaxSpeed) {
+		velocity *= (Constants::BallMaxSpeed / speed);
+	}
+
 	pos += velocity;
 
 	PhysicsCollision::checkBallBoundary(this);

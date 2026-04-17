@@ -9,5 +9,6 @@ public:
 	static void checkPlayerCollision(Player* player1, Player* player2);
 	static bool checkCollideHead(Player* player, Ball* ball);
 	static bool checkCollideBody(Player* player, Ball* ball);
+	static void checkGoalCrossbarCollision(Ball* ball);
 };
 

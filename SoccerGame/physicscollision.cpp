@@ -108,6 +108,68 @@ namespace
 		tHit = t;
 		return true;
 	}
+
+	bool resolveBallAABBCollision(Ball* ball, const AABB& box, double restitution)
+	{
+		double cx = clampd(ball->pos.x(), box.left, box.right);
+		double cy = clampd(ball->pos.y(), box.top, box.bottom);
+		QPointF closest(cx, cy);
+
+		QPointF diff = ball->pos - closest;
+		double dist2 = QPointF::dotProduct(diff, diff);
+		const double r = Constants::BallRadius;
+		if (dist2 >= r * r) return false;
+
+		QPointF normal;
+		double dist = std::sqrt(std::max(dist2, 1e-12));
+		if (dist > 1e-6) {
+			normal = diff / dist;
+			ball->pos += normal * (r - dist);
+		}
+		else {
+			double toLeft = std::abs(ball->pos.x() - box.left);
+			double toRight = std::abs(box.right - ball->pos.x());
+			double toTop = std::abs(ball->pos.y() - box.top);
+			double toBottom = std::abs(box.bottom - ball->pos.y());
+			double minD = std::min(std::min(toLeft, toRight), std::min(toTop, toBottom));
+
+			if (minD == toLeft) normal = QPointF(-1, 0);
+			else if (minD == toRight) normal = QPointF(1, 0);
+			else if (minD == toTop) normal = QPointF(0, -1);
+			else normal = QPointF(0, 1);
+
+			ball->pos += normal * (r + 0.1);
+		}
+
+		double vn = QPointF::dotProduct(ball->velocity, normal);
+		if (vn < 0.0) {
+			ball->velocity -= (1.0 + restitution) * vn * normal;
+		}
+		return true;
+	}
+}
+
+void PhysicsCollision::checkGoalCrossbarCollision(Ball* ball)
+{
+	const double goalTop = Constants::GroundLevel - Constants::GoalHeight;
+
+	const AABB leftBar{
+		0.0,
+		goalTop - Constants::GoalBarThickness,
+		double(Constants::GoalWidth),
+		goalTop
+	};
+
+	const AABB rightBar{
+		double(Constants::WindowWidth - Constants::GoalWidth),
+		goalTop - Constants::GoalBarThickness,
+		double(Constants::WindowWidth),
+		goalTop
+	};
+
+	const double restitution = 0.55;
+	resolveBallAABBCollision(ball, leftBar, restitution);
+	resolveBallAABBCollision(ball, rightBar, restitution);
 }
 
 void PhysicsCollision::checkBallBoundary(Ball* ball)
@@ -117,15 +179,15 @@ void PhysicsCollision::checkBallBoundary(Ball* ball)
 		ball->pos.setY(Constants::GroundLevel - Constants::BallRadius);
 
 		// 关键：小速度直接静止，避免地面“抖动反弹”累积能量
-		if (std::abs(ball->velocity.y()) < 1.2) {
+       if (std::abs(ball->velocity.y()) < Constants::BallSleepVy) {
 			ball->velocity.setY(0.0);
 		}
 		else {
-			ball->velocity.setY(-ball->velocity.y() * 0.35); // 降低地面反弹系数
+            ball->velocity.setY(-ball->velocity.y() * Constants::BallRestitutionGround); // 降低地面反弹系数
 		}
 
 		// friction on ground
-		ball->velocity.setX(ball->velocity.x() * 0.9);
+      ball->velocity.setX(ball->velocity.x() * Constants::BallGroundFriction);
 		ball->onGround = true;
 	}
 	else {
@@ -135,26 +197,26 @@ void PhysicsCollision::checkBallBoundary(Ball* ball)
 	// ceiling
 	if (ball->pos.y() - Constants::BallRadius <= 0) {
 		ball->pos.setY(Constants::BallRadius);
-		ball->velocity.setY(-ball->velocity.y() * 0.8);
+     ball->velocity.setY(-ball->velocity.y() * Constants::BallRestitutionWall);
 	}
 
 	// left wall
 	if (ball->pos.x() - Constants::BallRadius <= 0) {
 		ball->pos.setX(Constants::BallRadius);
-		ball->velocity.setX(-ball->velocity.x() * 0.8);
+     ball->velocity.setX(-ball->velocity.x() * Constants::BallRestitutionWall);
 	}
 
 	// right wall
 	if (ball->pos.x() + Constants::BallRadius >= Constants::WindowWidth) {
 		ball->pos.setX(Constants::WindowWidth - Constants::BallRadius);
-		ball->velocity.setX(-ball->velocity.x() * 0.8);
+     ball->velocity.setX(-ball->velocity.x() * Constants::BallRestitutionWall);
 	}
 }
 
 void PhysicsCollision::checkPlayerBoundary(Player* player)
 {
 	if (player->pos.y() + Constants::PlayerHeight > Constants::GroundLevel) { // 判断球员是否在地面以下
-		player->pos.setY(Constants::GroundLevel - 100);
+     player->pos.setY(Constants::GroundLevel - Constants::PlayerHeight);
 		player->onGround = true;
 		player->velocity.ry() = 0;
 	}
@@ -233,7 +295,7 @@ bool PhysicsCollision::checkCollideHead(Player* player, Ball* ball)
 	if (vn < 0.0) {
 		const double mPlayer = 60.0;
 		const double mBall = 0.5;
-		const double restitution = 0.95;
+        const double restitution = 0.5;
 
 		double j = -(1.0 + restitution) * vn / (1.0 / mPlayer + 1.0 / mBall);
 
@@ -249,20 +311,36 @@ bool PhysicsCollision::checkCollideHead(Player* player, Ball* ball)
 bool PhysicsCollision::checkCollideBody(Player* player, Ball* ball)
 {
 	if (player->iskick) {
-		double kickRange = Constants::PlayerHeight;
-		QPointF kickcenter = player->pos + QPointF(0, Constants::PlayerHeight);
+     const QPointF kickCenter = player->pos + QPointF(0, Constants::PlayerHeight);
+		const QPointF toBall = ball->pos - kickCenter;
 
-		QPointF kickDirection = ball->pos - kickcenter;
-		double dist = std::sqrt(kickDirection.x() * kickDirection.x() + kickDirection.y() * kickDirection.y());
-		if (dist < kickRange && kickDirection.x() * player->playerface > 0) {
-			if (kickDirection.x() == 0 && kickDirection.y() == 0) {
-				kickDirection = QPointF(0, -1);
-			}
-			else {
-				kickDirection /= dist;
-			}
-			double kickStrength = 35.0;
-			ball->velocity = kickStrength * kickDirection;
+		const double forward = toBall.x() * player->playerface;
+		const double vertical = std::abs(toBall.y());
+		const bool inKickZone =
+			forward >= -Constants::KickRangeBackward &&
+			forward <= Constants::KickRangeForward &&
+			vertical <= Constants::KickRangeVertical;
+
+		if (inKickZone) {
+			const double fx = std::clamp(forward / Constants::KickRangeForward, 0.0, 1.0);
+			const double vy = std::clamp(vertical / Constants::KickRangeVertical, 0.0, 1.0);
+
+			double loft = (1.0 - fx) * 0.75 + (1.0 - vy) * 0.25 + Constants::KickLiftBias;
+			loft = std::clamp(loft, 0.0, 1.0);
+
+			const double angleDeg =
+				Constants::KickMinAngleDeg +
+				(Constants::KickMaxAngleDeg - Constants::KickMinAngleDeg) * loft;
+			const double angleRad = angleDeg * 3.14159265358979323846 / 180.0;
+
+			QPointF kickDirection(player->playerface * std::cos(angleRad), -std::sin(angleRad));
+
+			const double zoneDistanceNorm = std::clamp(std::hypot(fx, vy), 0.0, 1.0);
+			const double t = 1.0 - zoneDistanceNorm;
+			double kickStrength = Constants::KickMinStrength + (Constants::KickMaxStrength - Constants::KickMinStrength) * t;
+
+			ball->velocity += kickStrength * kickDirection;
+			ball->velocity.rx() += player->velocity.x() * 0.35;
 			player->iskick = false;
 			return true;
 		}

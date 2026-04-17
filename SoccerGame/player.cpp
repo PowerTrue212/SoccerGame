@@ -2,11 +2,13 @@
 #include "constants.h"
 #include "physicscollision.h"
 #include <Qpainter>
+#include <algorithm>
+#include <cmath>
 
 Player::Player()
 {
 	velocity = QPointF(0, 0);
-	acceleration = 1;
+   acceleration = Constants::Gravity;
 }
 
 void Player::DrawPlayer(QPainter* painter)const {
@@ -17,25 +19,31 @@ void Player::DrawPlayer(QPainter* painter)const {
 }
 
 void Player::move(int orientation) {
-	velocity.setX(orientation * 10);
+    moveInput = std::clamp(orientation, -1, 1);
 }
 
 void Player::jump()
 {
 	if (onGround == false) return;
 	onGround = false;
-	velocity.ry() = -20;
+    velocity.ry() = -Constants::JumpSpeed;
 }
 
 void Player::update()
 {
+  const double ax = onGround ? Constants::PlayerGroundAccel : Constants::PlayerAirAccel;
+	velocity.rx() += moveInput * ax;
+
+	const double vmax = onGround ? Constants::PlayerMaxSpeedGround : Constants::PlayerMaxSpeedAir;
+	velocity.setX(std::clamp(velocity.x(), -vmax, vmax));
+
+	if (moveInput == 0) {
+		velocity.rx() *= (onGround ? Constants::PlayerGroundDrag : Constants::PlayerAirDrag);
+		if (std::abs(velocity.x()) < 0.08) velocity.setX(0.0);
+	}
+
 	velocity.ry() += acceleration;
 	pos += velocity;
 
 	PhysicsCollision::checkPlayerBoundary(this);
-
-	if (onGround) {
-		velocity.setX(velocity.x() * friction); // 地面摩擦力
-		if (std::abs(velocity.x()) < 0.1) velocity.setX(0); // 避免无限小的速度
-	}
 }

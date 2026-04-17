@@ -20,7 +20,7 @@ public:
 	bool onGround = true;
 	bool iskick = false;
 	int playerface;
-	int acceleration;
-	float friction = 0.85f;
+	double acceleration;
+	int moveInput = 0;
 };
 

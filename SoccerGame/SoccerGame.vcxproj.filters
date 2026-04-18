@@ -32,6 +32,9 @@
     <QtMoc Include="soccergame.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="playerselectscreen.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
     <ClCompile Include="soccergame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -55,6 +58,9 @@
     <ClCompile Include="menuscreen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="playerselectscreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="player.h">
@@ -72,9 +78,14 @@
     <ClInclude Include="menuscreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="playerselectscreen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="physicscollision.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
+
+
 

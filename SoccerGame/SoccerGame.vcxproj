@@ -95,11 +95,13 @@
     <QtRcc Include="soccergame.qrc" />
     <QtUic Include="soccergame.ui" />
     <QtMoc Include="soccergame.h" />
+    <QtMoc Include="playerselectscreen.h" />
     <ClCompile Include="ball.cpp" />
     <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="menuscreen.cpp" />
     <ClCompile Include="physicscollision.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="playerselectscreen.cpp" />
     <ClCompile Include="soccergame.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -110,6 +112,7 @@
     <ClInclude Include="menuscreen.h" />
     <ClInclude Include="physicscollision.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="playerselectscreen.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
@@ -118,3 +121,4 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
 </Project>
+

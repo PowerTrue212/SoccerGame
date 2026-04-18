@@ -9,12 +9,8 @@
 #include <QString>
 
 SoccerGame::SoccerGame(QWidget *parent)
-    : QMainWindow(parent)
+    : QWidget(parent)
 {
-    ui.setupUi(this);
-	this->resize(Constants::WindowWidth, Constants::WindowHeight);
-	this->setWindowTitle("SoccerGame");
-
 	player1 = new Player();
 	player2 = new Player();
 	ball = new Ball();
@@ -90,6 +86,7 @@ void SoccerGame::timerEvent(QTimerEvent* ) {
 	if (remainingMs <= 0) {
 		remainingMs = 0;
 		matchFinished = true;
+       emit gameFinished(score1, score2);
 	}
 
 	update();
@@ -122,7 +119,13 @@ void SoccerGame::mousePressEvent(QMouseEvent* event)
 		restartMatch();
 		update();
 	}
-	QMainWindow::mousePressEvent(event);
+    QWidget::mousePressEvent(event);
+}
+
+void SoccerGame::setPlayers(int p1Type, int p2Type)
+{
+	player1Type = p1Type;
+	player2Type = p2Type;
 }
 
 void SoccerGame::resetPositions()

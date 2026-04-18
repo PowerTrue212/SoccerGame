@@ -1,20 +1,23 @@
 ﻿#pragma once
 
-#include <QtWidgets/QMainWindow>
-#include "ui_soccergame.h"
+#include <QtWidgets/QWidget>
 #include <QPainter>
 #include <Qtimer>
 #include <QMouseEvent>
 #include "player.h"
 #include "ball.h"
 
-class SoccerGame : public QMainWindow
+class SoccerGame : public QWidget
 {
     Q_OBJECT
 
 public:
     SoccerGame(QWidget *parent = nullptr);
     ~SoccerGame();
+    void setPlayers(int p1Type, int p2Type);
+
+signals:
+    void gameFinished(int score1, int score2);
 
 protected:
     void collision();
@@ -25,7 +28,6 @@ protected:
     void mousePressEvent(QMouseEvent* event) override;
 
 private:
-    Ui::SoccerGameClass ui;
 	Player *player1;
 	Player *player2;
     Ball *ball;
@@ -34,6 +36,8 @@ private:
     int score2 = 0;
     int remainingMs = 90000;
     bool matchFinished = false;
+    int player1Type = 0;
+    int player2Type = 0;
 
     void resetPositions();
     void restartMatch();

@@ -15,6 +15,7 @@ public:
     SoccerGame(QWidget *parent = nullptr);
     ~SoccerGame();
     void setPlayers(int p1Type, int p2Type);
+    void restartMatch();
 
 signals:
     void gameFinished(int score1, int score2);
@@ -40,7 +41,6 @@ private:
     int player2Type = 0;
 
     void resetPositions();
-    void restartMatch();
     void checkGoalAndScore();
 };
 

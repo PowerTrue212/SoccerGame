@@ -4,6 +4,8 @@
 
 class QStackedWidget;
 class MenuScreen;
+class PlayerSelectScreen;
+class SoccerGame;
 
 class MainWindow : public QMainWindow
 {
@@ -12,8 +14,12 @@ public:
     ~MainWindow() override = default;
 
 private:
-    void onStartGameClicked();
+    void showPlayerSelectScreen();
+    void showMenuScreen();
+    void startGameWithPlayers(int p1Type, int p2Type);
 
     QStackedWidget* stackedWidget;
     MenuScreen* menuScreen;
+    PlayerSelectScreen* playerSelectScreen;
+    SoccerGame* gameScreen;
 };

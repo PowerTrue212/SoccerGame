@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -96,6 +96,8 @@
     <QtUic Include="soccergame.ui" />
     <QtMoc Include="soccergame.h" />
     <ClCompile Include="ball.cpp" />
+    <ClCompile Include="mainwindow.cpp" />
+    <ClCompile Include="menuscreen.cpp" />
     <ClCompile Include="physicscollision.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="soccergame.cpp" />
@@ -104,6 +106,8 @@
   <ItemGroup>
     <ClInclude Include="ball.h" />
     <ClInclude Include="constants.h" />
+    <ClInclude Include="mainwindow.h" />
+    <ClInclude Include="menuscreen.h" />
     <ClInclude Include="physicscollision.h" />
     <ClInclude Include="player.h" />
   </ItemGroup>
@@ -114,3 +118,4 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
 </Project>
+

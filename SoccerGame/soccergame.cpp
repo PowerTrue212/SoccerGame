@@ -3,7 +3,7 @@
 #include "ball.h"
 #include "constants.h"
 #include "physicscollision.h"
-#include <qobject.h>
+#include <QObject.h>
 #include <qpainter.h>
 #include <QKeyEvent>
 #include <QString>

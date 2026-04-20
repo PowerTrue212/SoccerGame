@@ -1,7 +1,7 @@
 ﻿#pragma once
 
-#include <QpointF>
-#include <Qpainter>
+#include <QPointF>
+#include <QPainter>
 
 class Ball
 {

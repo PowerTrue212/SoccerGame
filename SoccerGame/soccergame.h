@@ -2,7 +2,7 @@
 
 #include <QtWidgets/QWidget>
 #include <QPainter>
-#include <Qtimer>
+#include <QTimer>
 #include <QMouseEvent>
 #include "player.h"
 #include "ball.h"

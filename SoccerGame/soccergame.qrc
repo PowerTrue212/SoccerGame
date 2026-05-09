@@ -1,5 +1,13 @@
 <RCC>
-    <qresource prefix="/SoccerGame"/>
+    <qresource prefix="/SoccerGame">
+        <file>image/background.png</file>
+        <file>image/player_1.png</file>
+        <file>image/player_2.png</file>
+        <file>image/player_3.png</file>
+        <file>image/player_4.png</file>
+        <file>image/player_5.png</file>
+        <file>image/player_6.png</file>
+    </qresource>
     <qresource prefix="/images">
         <file>image/background.png</file>
     </qresource>

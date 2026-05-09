@@ -2,6 +2,7 @@
 
 #include <QPointF>
 #include <QPainter>
+#include <QPixmap>
 
 class Player
 {
@@ -9,6 +10,7 @@ public:
 	Player();
 	
 	void DrawPlayer(QPainter* painter) const;
+	void setHeadshot(const QPixmap& pixmap);
 
 	void move(int orientation); // key press left or right
 	void jump();
@@ -22,5 +24,6 @@ public:
 	int playerface;
 	double acceleration;
 	int moveInput = 0;
+  QPixmap headshot;
 };
 

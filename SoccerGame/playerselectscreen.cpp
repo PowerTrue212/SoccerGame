@@ -11,8 +11,8 @@ PlayerSelectScreen::PlayerSelectScreen(QWidget* parent)
       player1ComboBox(new QComboBox(this)),
       player2ComboBox(new QComboBox(this))
 {
-    player1ComboBox->addItems({"前锋", "中场", "后卫"});
-    player2ComboBox->addItems({"前锋", "中场", "后卫"});
+    player1ComboBox->addItems({"恩佐 (CHE)", "阿尔瓦雷斯 (ATM)", "赖斯 (MCI)", "哈兰德 (FCB)", "凯恩 (PSG)", "登贝莱 (ARS)"});
+    player2ComboBox->addItems({"恩佐 (CHE)", "阿尔瓦雷斯 (ATM)", "赖斯 (MCI)", "哈兰德 (FCB)", "凯恩 (PSG)", "登贝莱 (ARS)"});
 
     auto* player1Group = new QGroupBox("玩家1", this);
     auto* player2Group = new QGroupBox("玩家2", this);

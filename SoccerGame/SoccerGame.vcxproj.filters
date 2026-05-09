@@ -78,24 +78,17 @@
     <ClInclude Include="constants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="endgamescreen.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="mainwindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="menuscreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="playerselectscreen.h">
+    <ClInclude Include="physicscollision.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="physicscollision.h">
+    <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
-
-
-
-

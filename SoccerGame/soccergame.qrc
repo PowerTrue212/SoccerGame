@@ -1,4 +1,6 @@
 <RCC>
-    <qresource prefix="SoccerGame">
+    <qresource prefix="/SoccerGame"/>
+    <qresource prefix="/images">
+        <file>image/background.png</file>
     </qresource>
 </RCC>

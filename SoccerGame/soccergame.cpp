@@ -22,8 +22,13 @@ void SoccerGame::paintEvent(QPaintEvent* event) {
 	Q_UNUSED(event);
 	QPainter painter(this);
 	painter.setRenderHint(QPainter::Antialiasing, true);
-	painter.fillRect(rect(), QColor(135, 206, 235));
-	painter.fillRect(0, Constants::GroundLevel, width(), height() - Constants::GroundLevel, QColor(80, 180, 80));
+
+	// 1. 绘制背景图（拉伸填满整个窗口）
+	QPixmap bg(":/images/image/background.png");
+	painter.drawPixmap(rect(), bg);
+
+	///painter.fillRect(rect(), QColor(135, 206, 235));
+	//painter.fillRect(0, Constants::GroundLevel, width(), height() - Constants::GroundLevel, QColor(80, 180, 80));
 	painter.setBrush(Qt::NoBrush);
 	painter.setPen(QPen(Qt::white, 3));
 	painter.drawRect(0, Constants::GroundLevel - Constants::GoalHeight, Constants::GoalWidth, Constants::GoalHeight);
@@ -110,7 +115,9 @@ void SoccerGame::keyReleaseEvent(QKeyEvent* event) {
 	if (event->isAutoRepeat()) return;
 
 	if (event->key() == Qt::Key_A || event->key() == Qt::Key_D) player1->move(0);
+    if (event->key() == Qt::Key_S) player1->iskick = false;
 	if (event->key() == Qt::Key_Left || event->key() == Qt::Key_Right) player2->move(0);
+	if (event->key() == Qt::Key_Down) player2->iskick = false;
 }
 
 void SoccerGame::mousePressEvent(QMouseEvent* event)

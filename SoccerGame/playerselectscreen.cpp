@@ -1,57 +1,142 @@
 ﻿#include "playerselectscreen.h"
+#include "constants.h"
+#include "player.h"
 
-#include <QComboBox>
-#include <QGroupBox>
-#include <QHBoxLayout>
-#include <QPushButton>
-#include <QVBoxLayout>
+#include <QKeyEvent>
+#include <QPainter>
 
 PlayerSelectScreen::PlayerSelectScreen(QWidget* parent)
-    : QWidget(parent),
-      player1ComboBox(new QComboBox(this)),
-      player2ComboBox(new QComboBox(this))
+    : QWidget(parent)
 {
-    player1ComboBox->addItems({"恩佐 (CHE)", "阿尔瓦雷斯 (ATM)", "赖斯 (MCI)", "哈兰德 (FCB)", "凯恩 (PSG)", "登贝莱 (ARS)"});
-    player2ComboBox->addItems({"恩佐 (CHE)", "阿尔瓦雷斯 (ATM)", "赖斯 (MCI)", "哈兰德 (FCB)", "凯恩 (PSG)", "登贝莱 (ARS)"});
+    setFocusPolicy(Qt::StrongFocus);
+    background = QPixmap(":/images/image/background.png");
+    headshots = {
+        QPixmap(":/SoccerGame/image/player_1.png"),
+        QPixmap(":/SoccerGame/image/player_2.png"),
+        QPixmap(":/SoccerGame/image/player_3.png"),
+        QPixmap(":/SoccerGame/image/player_4.png"),
+        QPixmap(":/SoccerGame/image/player_5.png"),
+        QPixmap(":/SoccerGame/image/player_6.png")
+    };
+}
 
-    auto* player1Group = new QGroupBox("玩家1", this);
-    auto* player2Group = new QGroupBox("玩家2", this);
+void PlayerSelectScreen::paintEvent(QPaintEvent* event)
+{
+    Q_UNUSED(event);
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing, true);
 
-    auto* player1Layout = new QVBoxLayout(player1Group);
-    auto* player2Layout = new QVBoxLayout(player2Group);
-    player1Layout->addWidget(player1ComboBox);
-    player2Layout->addWidget(player2ComboBox);
+    if (!background.isNull()) {
+        painter.drawPixmap(rect(), background);
+    } else {
+        painter.fillRect(rect(), QColor(135, 206, 235));
+    }
 
-    auto* playersLayout = new QHBoxLayout();
-    playersLayout->addWidget(player1Group);
-    playersLayout->addSpacing(24);
-    playersLayout->addWidget(player2Group);
+    const int count = headshots.size();
+    const double spacing = 24.0;
+    const double totalWidth = Constants::WindowWidth - spacing * 2.0;
+    const double slotWidth = totalWidth / count;
+    const double headSize = Constants::PlayerRadius * 2.0;
+    const double groundY = Constants::GroundLevel;
+    const double headCenterY = groundY - Constants::PlayerHeight;
+    const double headY = headCenterY - Constants::PlayerRadius;
 
-    auto* startButton = new QPushButton("开始比赛", this);
-    auto* backButton = new QPushButton("返回", this);
+   const QString names[] = {
+        QStringLiteral("恩佐"),
+        QStringLiteral("阿尔瓦雷斯"),
+        QStringLiteral("赖斯"),
+        QStringLiteral("哈兰德"),
+        QStringLiteral("凯恩"),
+        QStringLiteral("登贝莱")
+    };
 
-    auto* buttonLayout = new QHBoxLayout();
-    buttonLayout->addStretch();
-    buttonLayout->addWidget(backButton);
-    buttonLayout->addSpacing(16);
-    buttonLayout->addWidget(startButton);
-    buttonLayout->addStretch();
+  QFont nameFont(QStringLiteral("Microsoft YaHei"), 18, QFont::Bold);
+    painter.setFont(nameFont);
+    painter.setPen(Qt::white);
+    for (int i = 0; i < count; ++i) {
+        const double centerX = spacing + slotWidth * (i + 0.5);
 
-    auto* centerLayout = new QVBoxLayout();
-    centerLayout->addLayout(playersLayout);
-    centerLayout->addSpacing(28);
-    centerLayout->addLayout(buttonLayout);
+        Player preview;
+        preview.pos = QPointF(centerX, headCenterY);
+        preview.playerface = 1;
+        preview.setHeadshot(headshots[i]);
+        preview.DrawPlayer(&painter);
 
-    auto* rootLayout = new QVBoxLayout(this);
-    rootLayout->addStretch();
-    rootLayout->addLayout(centerLayout);
-    rootLayout->addStretch();
+        painter.drawText(QRectF(centerX - slotWidth * 0.5, groundY + 8, slotWidth, 40), Qt::AlignHCenter | Qt::AlignTop, names[i]);
+    }
 
-    connect(startButton, &QPushButton::clicked, this, [this] {
-        emit playersSelected(player1ComboBox->currentIndex(), player2ComboBox->currentIndex());
-    });
+    const double arrowSize = 18.0;
+    const double topArrowY = headY - 55.0;
+    const double bottomArrowY = groundY + 45.0;
 
-    connect(backButton, &QPushButton::clicked, this, [this] {
+    auto drawTopArrow = [&](int index, const QColor& color) {
+        const double centerX = spacing + slotWidth * (index + 0.5);
+        QPolygonF topArrow;
+        topArrow << QPointF(centerX, topArrowY + arrowSize)
+                 << QPointF(centerX - arrowSize * 0.6, topArrowY)
+                 << QPointF(centerX + arrowSize * 0.6, topArrowY);
+
+        painter.setBrush(color);
+        painter.setPen(Qt::NoPen);
+        painter.drawPolygon(topArrow);
+    };
+
+    auto drawBottomArrow = [&](int index, const QColor& color) {
+        const double centerX = spacing + slotWidth * (index + 0.5);
+        QPolygonF bottomArrow;
+        bottomArrow << QPointF(centerX, bottomArrowY)
+                    << QPointF(centerX - arrowSize * 0.6, bottomArrowY + arrowSize)
+                    << QPointF(centerX + arrowSize * 0.6, bottomArrowY + arrowSize);
+
+        painter.setBrush(color);
+        painter.setPen(Qt::NoPen);
+        painter.drawPolygon(bottomArrow);
+    };
+
+   drawTopArrow(player1Index, QColor(255, 215, 0));
+    drawBottomArrow(player2Index, QColor(0, 200, 255));
+}
+
+void PlayerSelectScreen::keyPressEvent(QKeyEvent* event)
+{
+    if (event->isAutoRepeat()) {
+        QWidget::keyPressEvent(event);
+        return;
+    }
+
+    if (event->key() == Qt::Key_A) {
+        player1Index = (player1Index + headshots.size() - 1) % headshots.size();
+        update();
+        return;
+    }
+
+    if (event->key() == Qt::Key_D) {
+        player1Index = (player1Index + 1) % headshots.size();
+        update();
+        return;
+    }
+
+    if (event->key() == Qt::Key_Left) {
+        player2Index = (player2Index + headshots.size() - 1) % headshots.size();
+        update();
+        return;
+    }
+
+    if (event->key() == Qt::Key_Right) {
+        player2Index = (player2Index + 1) % headshots.size();
+        update();
+        return;
+    }
+
+    if (event->key() == Qt::Key_S || event->key() == Qt::Key_Down) {
+        emit playersSelected(player1Index, player2Index);
+        return;
+    }
+
+    if (event->key() == Qt::Key_Escape) {
         emit backToMenu();
-    });
+        return;
+    }
+
+    QWidget::keyPressEvent(event);
 }

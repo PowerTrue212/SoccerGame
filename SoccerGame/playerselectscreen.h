@@ -1,8 +1,7 @@
 #pragma once
 
 #include <QtWidgets/QWidget>
-
-class QComboBox;
+#include <QPixmap>
 
 class PlayerSelectScreen : public QWidget
 {
@@ -12,11 +11,17 @@ public:
     explicit PlayerSelectScreen(QWidget* parent = nullptr);
     ~PlayerSelectScreen() override = default;
 
+protected:
+    void paintEvent(QPaintEvent* event) override;
+    void keyPressEvent(QKeyEvent* event) override;
+
 signals:
     void playersSelected(int p1Type, int p2Type);
     void backToMenu();
 
 private:
-    QComboBox* player1ComboBox;
-    QComboBox* player2ComboBox;
+    QPixmap background;
+    QVector<QPixmap> headshots;
+    int player1Index = 0;
+    int player2Index = 0;
 };

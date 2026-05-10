@@ -23,6 +23,7 @@ protected:
 signals:
     void playAgain();
     void backToMenu();
+    void celebrationFinished(const QString& videoPath);
 
 private:
     QLabel* resultLabel;

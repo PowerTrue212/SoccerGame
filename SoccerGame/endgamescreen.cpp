@@ -100,12 +100,13 @@ void EndGameScreen::playCelebrationVideo(const QString& videoPath)
     widget->show();
     player->play();
 
-    connect(player, &QMediaPlayer::mediaStatusChanged, this, [this, player, widget](QMediaPlayer::MediaStatus status) {
+    connect(player, &QMediaPlayer::mediaStatusChanged, this, [this, player, widget, videoPath](QMediaPlayer::MediaStatus status) {
         if (status == QMediaPlayer::EndOfMedia) {
             widget->close();
             videoWidget = nullptr;
             player->deleteLater();
             videoPlayer = nullptr;
+            emit celebrationFinished(videoPath);
         }
     });
 }

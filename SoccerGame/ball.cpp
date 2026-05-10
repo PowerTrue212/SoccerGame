@@ -10,7 +10,7 @@ Ball::Ball()
 	pos = QPointF(Constants::WindowWidth/2, 100);
 	prevPos = pos;
    acceleration = QPointF(0, Constants::Gravity);
-    sprite = QPixmap(":/SoccerGame/image/soccer.png");
+    sprite = QPixmap(":/images/image/soccer.png");
 }
 
 // 绘制足球贴图，若贴图不存在则绘制备用圆形。

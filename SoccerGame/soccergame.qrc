@@ -7,6 +7,21 @@
         <file>image/player_4.png</file>
         <file>image/player_5.png</file>
         <file>image/player_6.png</file>
+        <file>image/ARS.png</file>
+        <file>image/ATM.png</file>
+        <file>image/CHE.png</file>
+        <file>image/FCB.png</file>
+        <file>image/MCI.png</file>
+        <file>image/PSG.png</file>
+        <file>image/soccer.png</file>
+        <file>music/alvarez_.mp4</file>
+        <file>music/dembele_.mp4</file>
+        <file>music/enzo_.mp4</file>
+        <file>music/game.mp4</file>
+        <file>music/haland_.mp4</file>
+        <file>music/kane_.mp4</file>
+        <file>music/rice_.mp4</file>
+        <file>music/start.mp4</file>
     </qresource>
     <qresource prefix="/images">
         <file>image/background.png</file>

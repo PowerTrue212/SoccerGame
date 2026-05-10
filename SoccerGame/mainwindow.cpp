@@ -8,6 +8,7 @@
 
 #include <QPushButton>
 #include <QStackedWidget>
+#include <QString>
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent),
@@ -62,6 +63,9 @@ void MainWindow::showEndGameScreen(int score1, int score2)
         endGameScreen->setResult(score1, score2);
     }
 
+    const int winnerType = (score1 > score2) ? gameScreen->getPlayer1Type() : (score2 > score1) ? gameScreen->getPlayer2Type() : -1;
+    endGameScreen->playCelebrationVideo(celebrationVideoForPlayer(winnerType));
+
     stackedWidget->setCurrentWidget(endGameScreen);
 }
 
@@ -70,4 +74,24 @@ void MainWindow::replayLastMatch()
     gameScreen->restartMatch();
     stackedWidget->setCurrentWidget(gameScreen);
     gameScreen->setFocus();
+}
+
+QString MainWindow::celebrationVideoForPlayer(int playerType) const
+{
+    switch (playerType) {
+    case 0:
+        return "qrc:/SoccerGame/music/enzo_.mp4";
+    case 1:
+        return "qrc:/SoccerGame/music/alvarez_.mp4";
+    case 2:
+        return "qrc:/SoccerGame/music/rice_.mp4";
+    case 3:
+        return "qrc:/SoccerGame/music/haland_.mp4";
+    case 4:
+        return "qrc:/SoccerGame/music/kane_.mp4";
+    case 5:
+        return "qrc:/SoccerGame/music/dembele_.mp4";
+    default:
+        return QString();
+    }
 }

@@ -183,6 +183,16 @@ void SoccerGame::resetPositions()
 	ball->onGround = false;
 }
 
+int SoccerGame::getPlayer1Type() const
+{
+	return player1Type;
+}
+
+int SoccerGame::getPlayer2Type() const
+{
+	return player2Type;
+}
+
 void SoccerGame::restartMatch()
 {
 	score1 = 0;

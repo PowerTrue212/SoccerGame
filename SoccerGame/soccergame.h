@@ -16,6 +16,8 @@ public:
     ~SoccerGame();
     void setPlayers(int p1Type, int p2Type);
     void restartMatch();
+    int getPlayer1Type() const;
+    int getPlayer2Type() const;
 
 signals:
     void gameFinished(int score1, int score2);

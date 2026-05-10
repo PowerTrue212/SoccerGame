@@ -4,6 +4,11 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QString>
+#include <QMediaPlayer>
+#include <QVideoWidget>
+#include <QAudioOutput>
+#include <QUrl>
+#include <QResizeEvent>
 
 EndGameScreen::EndGameScreen(int score1, int score2, QWidget* parent)
     : QWidget(parent),
@@ -22,7 +27,8 @@ EndGameScreen::EndGameScreen(int score1, int score2, QWidget* parent)
     auto* rootLayout = new QVBoxLayout(this);
     rootLayout->addStretch();
     rootLayout->addWidget(resultLabel, 0, Qt::AlignHCenter);
-    rootLayout->addSpacing(36);
+    rootLayout->addSpacing(12);
+    rootLayout->addStretch();
     rootLayout->addWidget(playAgainButton, 0, Qt::AlignHCenter);
     rootLayout->addSpacing(14);
     rootLayout->addWidget(backToMenuButton, 0, Qt::AlignHCenter);
@@ -48,4 +54,58 @@ void EndGameScreen::setResult(int score1, int score2)
     }
 
     resultLabel->setText(QString("%1\n最终比分：%2 : %3").arg(winnerText).arg(score1).arg(score2));
+}
+
+void EndGameScreen::resizeEvent(QResizeEvent* event)
+{
+    QWidget::resizeEvent(event);
+    if (videoWidget) {
+        videoWidget->setGeometry(rect());
+    }
+}
+
+void EndGameScreen::playCelebrationVideo(const QString& videoPath)
+{
+    if (videoWidget) {
+        videoWidget->deleteLater();
+        videoWidget = nullptr;
+    }
+    if (videoPlayer) {
+        videoPlayer->stop();
+        videoPlayer->deleteLater();
+        videoPlayer = nullptr;
+    }
+    if (audioOutput) {
+        audioOutput->deleteLater();
+        audioOutput = nullptr;
+    }
+
+    if (videoPath.isEmpty()) {
+        return;
+    }
+
+    auto* player = new QMediaPlayer(this);
+    auto* widget = new QVideoWidget(this);
+    auto* output = new QAudioOutput(this);
+    videoWidget = widget;
+    videoPlayer = player;
+    audioOutput = output;
+
+    widget->setAttribute(Qt::WA_DeleteOnClose, true);
+    widget->setGeometry(rect());
+    player->setVideoOutput(widget);
+    player->setAudioOutput(output);
+    player->setSource(QUrl(videoPath));
+
+    widget->show();
+    player->play();
+
+    connect(player, &QMediaPlayer::mediaStatusChanged, this, [this, player, widget](QMediaPlayer::MediaStatus status) {
+        if (status == QMediaPlayer::EndOfMedia) {
+            widget->close();
+            videoWidget = nullptr;
+            player->deleteLater();
+            videoPlayer = nullptr;
+        }
+    });
 }

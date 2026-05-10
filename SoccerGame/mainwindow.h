@@ -20,6 +20,7 @@ private:
     void startGameWithPlayers(int p1Type, int p2Type);
     void showEndGameScreen(int score1, int score2);
     void replayLastMatch();
+    QString celebrationVideoForPlayer(int playerType) const;
 
     QStackedWidget* stackedWidget;
     MenuScreen* menuScreen;

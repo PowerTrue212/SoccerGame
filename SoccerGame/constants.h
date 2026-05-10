@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+// 游戏常量配置（窗口、物理参数、球门尺寸等）。
 namespace Constants
 {
 	constexpr int WindowWidth = 1600;
@@ -8,7 +9,7 @@ namespace Constants
 	constexpr int GroundLevel = 700;
 
 	constexpr int PlayerRadius = 50;
-	constexpr int PlayerHeight = 100; // the height from the ground to the center of the player's head
+  constexpr int PlayerHeight = 100; // 从地面到球员头部中心的高度
 	constexpr int PlayerBodyHeight = 50;
 	constexpr int PlayerBodyWidth = 40;
 	constexpr int Playeroffset = 20; // 头中心和脚中心的水平距离
@@ -19,7 +20,7 @@ namespace Constants
 	constexpr int GoalHeight = 240;
 	constexpr int GoalBarThickness = 15;
 
-	// physics tuning
+   // 物理参数调整
 	constexpr double Gravity = 0.70;
 
 	constexpr double BallAirDrag = 0.999;

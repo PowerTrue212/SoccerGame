@@ -8,6 +8,7 @@
 #include <QKeyEvent>
 #include <QString>
 
+// 初始化比赛界面与球员、足球对象。
 SoccerGame::SoccerGame(QWidget *parent)
     : QWidget(parent)
 {
@@ -18,16 +19,17 @@ SoccerGame::SoccerGame(QWidget *parent)
 	gameTimerId = startTimer(16);
 }
 
+// 绘制比赛场景与 UI 信息。
 void SoccerGame::paintEvent(QPaintEvent* event) {
 	Q_UNUSED(event);
 	QPainter painter(this);
 	painter.setRenderHint(QPainter::Antialiasing, true);
 
-	// 1. 绘制背景图（拉伸填满整个窗口）
+   // 绘制背景图（拉伸填满整个窗口）
 	QPixmap bg(":/images/image/background.png");
 	painter.drawPixmap(rect(), bg);
 
-	///painter.fillRect(rect(), QColor(135, 206, 235));
+ //painter.fillRect(rect(), QColor(135, 206, 235));
 	//painter.fillRect(0, Constants::GroundLevel, width(), height() - Constants::GroundLevel, QColor(80, 180, 80));
   painter.setBrush(Qt::NoBrush);
 	QPen goalPen(QColor(245, 245, 245), 5);
@@ -140,6 +142,7 @@ void SoccerGame::paintEvent(QPaintEvent* event) {
 
 }
 
+// 处理球员与足球之间的碰撞检测。
 void SoccerGame::collision() {
 	Player* players[2] = { player1, player2 };
 	PhysicsCollision::checkPlayerCollision(player1, player2);
@@ -150,6 +153,7 @@ void SoccerGame::collision() {
    PhysicsCollision::checkGoalCrossbarCollision(ball);
 }
 
+// 定时器刷新逻辑，推动比赛进行。
 void SoccerGame::timerEvent(QTimerEvent* ) {
 	if (matchFinished) {
 
@@ -174,6 +178,7 @@ void SoccerGame::timerEvent(QTimerEvent* ) {
 	update();
 }
 
+// 处理键盘按下事件。
 void SoccerGame::keyPressEvent(QKeyEvent *event) {
    if (event->isAutoRepeat()) return;
 
@@ -188,6 +193,7 @@ void SoccerGame::keyPressEvent(QKeyEvent *event) {
 	if (event->key() == Qt::Key_Down) player2->iskick = true;
 }
 
+// 处理键盘松开事件。
 void SoccerGame::keyReleaseEvent(QKeyEvent* event) {
 	if (event->isAutoRepeat()) return;
 
@@ -197,6 +203,7 @@ void SoccerGame::keyReleaseEvent(QKeyEvent* event) {
 	if (event->key() == Qt::Key_Down) player2->iskick = false;
 }
 
+// 处理鼠标点击事件，用于比赛结束后的重开。
 void SoccerGame::mousePressEvent(QMouseEvent* event)
 {
 	if (event->button() == Qt::LeftButton && matchFinished) {
@@ -206,6 +213,7 @@ void SoccerGame::mousePressEvent(QMouseEvent* event)
     QWidget::mousePressEvent(event);
 }
 
+// 设置双方球员的头像与身体贴图。
 void SoccerGame::setPlayers(int p1Type, int p2Type)
 {
 	player1Type = p1Type;
@@ -239,6 +247,7 @@ void SoccerGame::setPlayers(int p1Type, int p2Type)
 	}
 }
 
+// 重置球员与足球的初始位置与状态。
 void SoccerGame::resetPositions()
 {
 	player1->pos = QPointF(300, Constants::GroundLevel - Constants::PlayerHeight);
@@ -260,16 +269,19 @@ void SoccerGame::resetPositions()
 	ball->onGround = false;
 }
 
+// 获取玩家1的球员类型。
 int SoccerGame::getPlayer1Type() const
 {
 	return player1Type;
 }
 
+// 获取玩家2的球员类型。
 int SoccerGame::getPlayer2Type() const
 {
 	return player2Type;
 }
 
+// 重置比分与计时器并重新开始比赛。
 void SoccerGame::restartMatch()
 {
 	score1 = 0;
@@ -279,6 +291,7 @@ void SoccerGame::restartMatch()
 	resetPositions();
 }
 
+// 检测进球并更新比分。
 void SoccerGame::checkGoalAndScore()
 {
 	const double goalTop = Constants::GroundLevel - Constants::GoalHeight;
@@ -295,6 +308,7 @@ void SoccerGame::checkGoalAndScore()
 	}
 }
 
+// 释放比赛资源。
 SoccerGame::~SoccerGame()
 {
 	delete player1;

@@ -5,6 +5,7 @@
 #include <QKeyEvent>
 #include <QPainter>
 
+// 构建选人界面并加载球员贴图资源。
 PlayerSelectScreen::PlayerSelectScreen(QWidget* parent)
     : QWidget(parent)
 {
@@ -29,6 +30,7 @@ PlayerSelectScreen::PlayerSelectScreen(QWidget* parent)
     };
 }
 
+// 绘制选人界面内容。
 void PlayerSelectScreen::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event);
@@ -112,6 +114,7 @@ void PlayerSelectScreen::paintEvent(QPaintEvent* event)
     drawBottomArrow(player2Index, QColor(0, 200, 255));
 }
 
+// 响应键盘输入以切换与确认球员选择。
 void PlayerSelectScreen::keyPressEvent(QKeyEvent* event)
 {
     if (event->isAutoRepeat()) {

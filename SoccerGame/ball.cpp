@@ -3,6 +3,7 @@
 #include "physicscollision.h"
 #include <cmath>
 
+// 构造足球并载入贴图资源。
 Ball::Ball()
 {
    velocity = QPointF(0, 0);
@@ -12,6 +13,7 @@ Ball::Ball()
     sprite = QPixmap(":/SoccerGame/image/soccer.png");
 }
 
+// 绘制足球贴图，若贴图不存在则绘制备用圆形。
 void Ball::DrawBall(QPainter* painter) const
 {
  if (!sprite.isNull()) {
@@ -29,11 +31,13 @@ void Ball::DrawBall(QPainter* painter) const
 	painter->drawEllipse(pos, Constants::BallRadius, Constants::BallRadius);
 }
 
+// 在足球接触地面时对水平速度应用摩擦。
 void Ball::Friction() {
 	if (!onGround) return;
    velocity.rx() *= Constants::BallGroundFriction;
 }
 
+// 更新足球物理状态、限制速度并处理边界碰撞。
 void Ball::update()
 {
 	prevPos = pos;

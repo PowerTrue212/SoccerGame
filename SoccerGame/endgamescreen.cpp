@@ -13,6 +13,7 @@
 #include <QUrl>
 #include <QResizeEvent>
 
+// 构建结束界面并初始化按钮与胜负信息。
 EndGameScreen::EndGameScreen(int score1, int score2, int player1Type, int player2Type, QWidget* parent)
     : QWidget(parent),
       resultLabel(new QLabel(this)),
@@ -108,6 +109,7 @@ EndGameScreen::EndGameScreen(int score1, int score2, int player1Type, int player
     connect(backToMenuButton, &QPushButton::clicked, this, &EndGameScreen::backToMenu);
 }
 
+// 更新结束界面显示的胜负信息与比分。
 void EndGameScreen::setResult(int score1, int score2, int player1TypeValue, int player2TypeValue)
 {
     QString winnerText;
@@ -167,6 +169,7 @@ void EndGameScreen::setResult(int score1, int score2, int player1TypeValue, int 
         .arg(winnerColor.name()));
 }
 
+// 处理尺寸变化时的视频层调整。
 void EndGameScreen::resizeEvent(QResizeEvent* event)
 {
     QWidget::resizeEvent(event);
@@ -175,6 +178,7 @@ void EndGameScreen::resizeEvent(QResizeEvent* event)
     }
 }
 
+// 绘制结束界面背景。
 void EndGameScreen::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
@@ -190,6 +194,7 @@ void EndGameScreen::paintEvent(QPaintEvent* event)
     QWidget::paintEvent(event);
 }
 
+// 播放胜利视频并处理播放结束回调。
 void EndGameScreen::playCelebrationVideo(const QString& videoPath)
 {
     if (videoWidget) {

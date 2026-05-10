@@ -1,27 +1,31 @@
 ﻿#include "player.h"
 #include "constants.h"
 #include "physicscollision.h"
-#include <Qpainter>
+#include <QPainter>
 #include <QPainterPath>
 #include <algorithm>
 #include <cmath>
 
+// 构造球员并初始化速度与重力加速度。
 Player::Player()
 {
 	velocity = QPointF(0, 0);
 	acceleration = Constants::Gravity;
 }
 
+// 设置头像贴图。
 void Player::setHeadshot(const QPixmap& pixmap)
 {
 	headshot = pixmap;
 }
 
+// 设置身体贴图。
 void Player::setBody(const QPixmap& pixmap)
 {
 	body = pixmap;
 }
 
+// 绘制球员身体与头像。
 void Player::DrawPlayer(QPainter* painter)const {
     const QRectF bodyRect(
 		pos.x() - Constants::PlayerBodyWidth * 0.5,
@@ -61,10 +65,12 @@ void Player::DrawPlayer(QPainter* painter)const {
 
 }
 
+// 处理球员水平移动输入。
 void Player::move(int orientation) {
     moveInput = std::clamp(orientation, -1, 1);
 }
 
+// 触发球员跳跃。
 void Player::jump()
 {
 	if (onGround == false) return;
@@ -72,6 +78,7 @@ void Player::jump()
     velocity.ry() = -Constants::JumpSpeed;
 }
 
+// 更新球员速度与位置，并处理边界碰撞。
 void Player::update()
 {
   const double ax = onGround ? Constants::PlayerGroundAccel : Constants::PlayerAirAccel;

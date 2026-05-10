@@ -5,6 +5,7 @@
 #include <QGraphicsDropShadowEffect>   // 用于按钮阴影
 #include <QLabel>
 
+// 初始化主菜单界面与按钮样式。
 MenuScreen::MenuScreen(QWidget* parent)
     : QWidget(parent),
     startButton(new QPushButton("开始游戏", this)),
@@ -106,6 +107,7 @@ MenuScreen::MenuScreen(QWidget* parent)
 }
 
 
+// 获取开始游戏按钮指针。
 QPushButton* MenuScreen::startGameButton() const
 {
     return startButton;

@@ -14,6 +14,7 @@
 #include <QShortcut>
 #include <QKeySequence>
 
+// 初始化主窗口、界面栈以及背景音效。
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent),
       stackedWidget(new QStackedWidget(this)),
@@ -48,18 +49,21 @@ MainWindow::MainWindow(QWidget* parent)
     });
 }
 
+// 切换到选人界面。
 void MainWindow::showPlayerSelectScreen()
 {
     stackedWidget->setCurrentWidget(playerSelectScreen);
     setBackgroundAudio("qrc:/SoccerGame/music/start.mp4");
 }
 
+// 切换回菜单界面。
 void MainWindow::showMenuScreen()
 {
     stackedWidget->setCurrentWidget(menuScreen);
     setBackgroundAudio("qrc:/SoccerGame/music/start.mp4");
 }
 
+// 根据玩家选择启动比赛。
 void MainWindow::startGameWithPlayers(int p1Type, int p2Type)
 {
     gameScreen->setPlayers(p1Type, p2Type);
@@ -69,6 +73,7 @@ void MainWindow::startGameWithPlayers(int p1Type, int p2Type)
     setBackgroundAudio("qrc:/SoccerGame/music/game.mp4");
 }
 
+// 显示结束界面并触发胜利视频。
 void MainWindow::showEndGameScreen(int score1, int score2)
 {
     const int player1Type = gameScreen->getPlayer1Type();
@@ -97,6 +102,7 @@ void MainWindow::showEndGameScreen(int score1, int score2)
     stackedWidget->setCurrentWidget(endGameScreen);
 }
 
+// 重新开始上一场比赛。
 void MainWindow::replayLastMatch()
 {
     gameScreen->restartMatch();
@@ -105,6 +111,7 @@ void MainWindow::replayLastMatch()
     setBackgroundAudio("qrc:/SoccerGame/music/game.mp4");
 }
 
+// 根据球员类型选择庆祝视频。
 QString MainWindow::celebrationVideoForPlayer(int playerType) const
 {
     switch (playerType) {
@@ -125,6 +132,7 @@ QString MainWindow::celebrationVideoForPlayer(int playerType) const
     }
 }
 
+// 切换背景音效播放源。
 void MainWindow::setBackgroundAudio(const QString& source)
 {
     if (currentAudioSource == source) {
@@ -140,6 +148,7 @@ void MainWindow::setBackgroundAudio(const QString& source)
     }
 }
 
+// 停止背景音效播放。
 void MainWindow::stopBackgroundAudio()
 {
     currentAudioSource.clear();

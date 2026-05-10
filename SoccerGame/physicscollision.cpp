@@ -9,6 +9,7 @@
 
 namespace
 {
+ // 轴对齐包围盒结构，用于碰撞检测。
 	struct AABB
 	{
 		double left;
@@ -17,13 +18,14 @@ namespace
 		double bottom;
 	};
 
+ // 将数值限制在指定区间内。
 	static inline double clampd(double v, double lo, double hi)
 	{
 		return std::max(lo, std::min(v, hi));
 	}
 
-	// Swept point vs AABB (segment p0->p1)
-	// Returns hit time t in [0,1] and collision normal.
+ // 扫掠点与包围盒的连续碰撞检测（p0->p1）。
+	// 返回碰撞时间 t ∈ [0,1] 以及碰撞法线。
 	bool sweptPointVsAABB(const QPointF& p0, const QPointF& p1, const AABB& box, double& tHit, QPointF& normal)
 	{
 		constexpr double inf = std::numeric_limits<double>::infinity();
@@ -35,7 +37,7 @@ namespace
 		double tExit = inf;
 		normal = QPointF(0, 0);
 
-		// X slab
+       // X 轴区间
 		if (std::abs(dx) < eps) {
 			if (p0.x() < box.left || p0.x() > box.right) return false;
 		}
@@ -52,7 +54,7 @@ namespace
 			tExit = std::min(tExit, txFar);
 		}
 
-		// Y slab
+       // Y 轴区间
 		if (std::abs(dy) < eps) {
 			if (p0.y() < box.top || p0.y() > box.bottom) return false;
 		}
@@ -72,12 +74,13 @@ namespace
 		if (tEnter > tExit) return false;
 		if (tExit < 0.0) return false;
 		if (tEnter > 1.0) return false;
-		if (tEnter < 0.0) return false; // starts inside expanded AABB: leave to discrete branch
+        if (tEnter < 0.0) return false; // 起点在扩展包围盒内，交给离散分支处理
 
 		tHit = tEnter;
 		return true;
 	}
 
+  // 扫掠点与圆形的连续碰撞检测。
 	bool sweptPointVsCircle(const QPointF& p0, const QPointF& p1, const QPointF& center, double radius, double& tHit, QPointF& normal)
 	{
 		const QPointF d = p1 - p0;
@@ -95,7 +98,7 @@ namespace
 		if (disc < 0.0) return false;
 
 		const double sqrtDisc = std::sqrt(disc);
-		const double t = (-b - sqrtDisc) / (2.0 * a); // first hit
+      const double t = (-b - sqrtDisc) / (2.0 * a); // 首次命中
 
 		if (t < 0.0 || t > 1.0) return false;
 
@@ -109,6 +112,7 @@ namespace
 		return true;
 	}
 
+  // 处理足球与包围盒的碰撞修正与反弹。
 	bool resolveBallAABBCollision(Ball* ball, const AABB& box, double restitution)
 	{
 		double cx = clampd(ball->pos.x(), box.left, box.right);
@@ -149,6 +153,7 @@ namespace
 	}
 }
 
+// 检测足球与球门横梁的碰撞。
 void PhysicsCollision::checkGoalCrossbarCollision(Ball* ball)
 {
 	const double goalTop = Constants::GroundLevel - Constants::GoalHeight;
@@ -172,6 +177,7 @@ void PhysicsCollision::checkGoalCrossbarCollision(Ball* ball)
 	resolveBallAABBCollision(ball, rightBar, restitution);
 }
 
+// 处理足球与场地边界的碰撞修正。
 void PhysicsCollision::checkBallBoundary(Ball* ball)
 {
 	// floor
@@ -213,6 +219,7 @@ void PhysicsCollision::checkBallBoundary(Ball* ball)
 	}
 }
 
+// 处理球员与场地边界的碰撞修正。
 void PhysicsCollision::checkPlayerBoundary(Player* player)
 {
 	if (player->pos.y() + Constants::PlayerHeight > Constants::GroundLevel) { // 判断球员是否在地面以下
@@ -234,6 +241,7 @@ void PhysicsCollision::checkPlayerBoundary(Player* player)
 	}
 }
 
+// 处理两个球员之间的碰撞。
 void PhysicsCollision::checkPlayerCollision(Player* player1, Player* player2)
 {
 	QPointF orient = player2->pos - player1->pos;
@@ -250,6 +258,7 @@ void PhysicsCollision::checkPlayerCollision(Player* player1, Player* player2)
 	
 }
 
+// 检测足球与球员头部的碰撞并计算反弹。
 bool PhysicsCollision::checkCollideHead(Player* player, Ball* ball)
 {
 	const QPointF headCenter = player->pos;
@@ -308,6 +317,7 @@ bool PhysicsCollision::checkCollideHead(Player* player, Ball* ball)
 	return true;
 }
 
+// 检测足球与球员身体/踢球区域的碰撞并计算反弹。
 bool PhysicsCollision::checkCollideBody(Player* player, Ball* ball)
 {
 	if (player->iskick) {

@@ -1,8 +1,10 @@
-#include "endgamescreen.h"
+﻿#include "endgamescreen.h"
 
 #include <QLabel>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QPainter>
+#include <QPaintEvent>
 #include <QString>
 #include <QMediaPlayer>
 #include <QVideoWidget>
@@ -10,16 +12,22 @@
 #include <QUrl>
 #include <QResizeEvent>
 
-EndGameScreen::EndGameScreen(int score1, int score2, QWidget* parent)
+EndGameScreen::EndGameScreen(int score1, int score2, int player1Type, int player2Type, QWidget* parent)
     : QWidget(parent),
       resultLabel(new QLabel(this)),
       playAgainButton(new QPushButton("再来一局", this)),
-      backToMenuButton(new QPushButton("返回主菜单", this))
+      backToMenuButton(new QPushButton("返回主菜单", this)),
+      player1Type(player1Type),
+      player2Type(player2Type)
 {
+    setAutoFillBackground(false);
+    background = QPixmap(":/images/image/background.png");
+
     resultLabel->setAlignment(Qt::AlignCenter);
-    QFont titleFont("Arial", 28);
+    QFont titleFont("Microsoft YaHei", 32, QFont::Bold);
     titleFont.setBold(true);
     resultLabel->setFont(titleFont);
+    resultLabel->setStyleSheet("color: white;");
 
     playAgainButton->setMinimumSize(220, 56);
     backToMenuButton->setMinimumSize(220, 56);
@@ -34,26 +42,43 @@ EndGameScreen::EndGameScreen(int score1, int score2, QWidget* parent)
     rootLayout->addWidget(backToMenuButton, 0, Qt::AlignHCenter);
     rootLayout->addStretch();
 
-    setResult(score1, score2);
+    setResult(score1, score2, player1Type, player2Type);
 
     connect(playAgainButton, &QPushButton::clicked, this, &EndGameScreen::playAgain);
     connect(backToMenuButton, &QPushButton::clicked, this, &EndGameScreen::backToMenu);
 }
 
-void EndGameScreen::setResult(int score1, int score2)
+void EndGameScreen::setResult(int score1, int score2, int player1TypeValue, int player2TypeValue)
 {
     QString winnerText;
+    const QString abbreviations[] = {
+        QStringLiteral("CHE"),
+        QStringLiteral("ATM"),
+        QStringLiteral("ARS"),
+        QStringLiteral("MCI"),
+        QStringLiteral("PSG"),
+        QStringLiteral("FCB")
+    };
+
+    auto abbreviationForType = [&](int type) -> QString {
+        if (type >= 0 && type < 6) {
+            return abbreviations[type];
+        }
+        return QString();
+    };
+
     if (score1 > score2) {
-        winnerText = "玩家1 获胜！";
+        winnerText = abbreviationForType(player1TypeValue);
     }
     else if (score2 > score1) {
-        winnerText = "玩家2 获胜！";
+        winnerText = abbreviationForType(player2TypeValue);
     }
     else {
-        winnerText = "平局！";
+        winnerText = QStringLiteral("平局！");
     }
 
-    resultLabel->setText(QString("%1\n最终比分：%2 : %3").arg(winnerText).arg(score1).arg(score2));
+    const QString displayText = winnerText.isEmpty() ? QStringLiteral("平局！") : winnerText + "   WIN!";
+    resultLabel->setText(QString("%1\n最终比分：%2 : %3").arg(displayText).arg(score1).arg(score2));
 }
 
 void EndGameScreen::resizeEvent(QResizeEvent* event)
@@ -62,6 +87,21 @@ void EndGameScreen::resizeEvent(QResizeEvent* event)
     if (videoWidget) {
         videoWidget->setGeometry(rect());
     }
+}
+
+void EndGameScreen::paintEvent(QPaintEvent* event)
+{
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing, true);
+
+    if (!background.isNull()) {
+        painter.drawPixmap(rect(), background);
+    }
+    else {
+        painter.fillRect(rect(), QColor(135, 206, 235));
+    }
+
+    QWidget::paintEvent(event);
 }
 
 void EndGameScreen::playCelebrationVideo(const QString& videoPath)

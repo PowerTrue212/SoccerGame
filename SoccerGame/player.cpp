@@ -9,7 +9,7 @@
 Player::Player()
 {
 	velocity = QPointF(0, 0);
-   acceleration = Constants::Gravity;
+	acceleration = Constants::Gravity;
 }
 
 void Player::setHeadshot(const QPixmap& pixmap)

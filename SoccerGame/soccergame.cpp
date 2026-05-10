@@ -40,10 +40,65 @@ void SoccerGame::paintEvent(QPaintEvent* event) {
 	player2->DrawPlayer(&painter);
 	ball->DrawBall(&painter);
 
-	QFont font1("Arial", 25);
-	painter.setFont(font1);   
-	painter.setPen(Qt::black);
-	painter.drawText(50, 50, QString("P1 %1 : %2 P2").arg(score1).arg(score2));
+   const QString abbreviations[] = {
+		QStringLiteral("CHE"),
+		QStringLiteral("ATM"),
+		QStringLiteral("ARS"),
+		QStringLiteral("MCI"),
+		QStringLiteral("PSG"),
+		QStringLiteral("FCB")
+	};
+
+	auto abbreviationForType = [&](int type) -> QString {
+		if (type >= 0 && type < 6) {
+			return abbreviations[type];
+		}
+		return QString();
+	};
+
+	auto teamColorForType = [&](int type) -> QColor {
+		switch (type) {
+		case 0:
+			return QColor("#034694");
+		case 1:
+			return QColor("#CB3524");
+		case 2:
+			return QColor("#EF0107");
+		case 3:
+			return QColor("#6CABDD");
+		case 4:
+			return QColor("#004170");
+		case 5:
+			return QColor("#DC052D");
+		default:
+			return QColor("#444444");
+		}
+	};
+
+	const QString p1Abbreviation = abbreviationForType(player1Type);
+	const QString p2Abbreviation = abbreviationForType(player2Type);
+
+  const int scoreY = 28;
+	const int rectHeight = 42;
+	const int rectWidth = 110;
+	const int gap = 8;
+	const int leftRectX = 24;
+	const int rightRectX = leftRectX + rectWidth + gap;
+
+	QFont scoreFont("Microsoft YaHei", 22, QFont::Bold);
+	painter.setFont(scoreFont);
+	painter.setPen(Qt::NoPen);
+
+	painter.setBrush(teamColorForType(player1Type));
+ painter.drawRect(QRect(leftRectX, scoreY, rectWidth, rectHeight));
+	painter.setBrush(teamColorForType(player2Type));
+    painter.drawRect(QRect(rightRectX, scoreY, rectWidth, rectHeight));
+
+	painter.setPen(Qt::white);
+	painter.drawText(QRect(leftRectX, scoreY, rectWidth, rectHeight), Qt::AlignCenter,
+		QString("%1 %2").arg(p1Abbreviation).arg(score1));
+	painter.drawText(QRect(rightRectX, scoreY, rectWidth, rectHeight), Qt::AlignCenter,
+		QString("%1 %2").arg(score2).arg(p2Abbreviation));
 
 	const int totalSeconds = remainingMs / 1000;
 	const int mm = totalSeconds / 60;
@@ -139,8 +194,8 @@ void SoccerGame::setPlayers(int p1Type, int p2Type)
 		":/SoccerGame/image/player_2.png",
 		":/SoccerGame/image/player_3.png",
 		":/SoccerGame/image/player_4.png",
-		":/SoccerGame/image/player_5.png",
-		":/SoccerGame/image/player_6.png"
+		":/SoccerGame/image/player_6.png",
+		":/SoccerGame/image/player_5.png"
 	};
 
 	const QString bodies[] = {

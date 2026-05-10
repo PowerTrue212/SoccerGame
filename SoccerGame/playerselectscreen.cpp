@@ -15,8 +15,8 @@ PlayerSelectScreen::PlayerSelectScreen(QWidget* parent)
         QPixmap(":/SoccerGame/image/player_2.png"),
         QPixmap(":/SoccerGame/image/player_3.png"),
         QPixmap(":/SoccerGame/image/player_4.png"),
-        QPixmap(":/SoccerGame/image/player_5.png"),
-        QPixmap(":/SoccerGame/image/player_6.png")
+        QPixmap(":/SoccerGame/image/player_6.png"),
+        QPixmap(":/SoccerGame/image/player_5.png")
     };
 
     bodies = {
@@ -41,6 +41,11 @@ void PlayerSelectScreen::paintEvent(QPaintEvent* event)
         painter.fillRect(rect(), QColor(135, 206, 235));
     }
 
+    QFont titleFont(QStringLiteral("Microsoft YaHei"), 42, QFont::Bold);
+    painter.setFont(titleFont);
+    painter.setPen(Qt::white);
+    painter.drawText(QRectF(0, 30, Constants::WindowWidth, 60), Qt::AlignHCenter | Qt::AlignVCenter, QStringLiteral("SoccerGame"));
+
     const int count = headshots.size();
     const double spacing = 24.0;
     const double totalWidth = Constants::WindowWidth - spacing * 2.0;
@@ -55,8 +60,8 @@ void PlayerSelectScreen::paintEvent(QPaintEvent* event)
         QStringLiteral("阿尔瓦雷斯"),
         QStringLiteral("赖斯"),
         QStringLiteral("哈兰德"),
-        QStringLiteral("凯恩"),
-        QStringLiteral("登贝莱")
+        QStringLiteral("登贝莱"),
+        QStringLiteral("凯恩")
     };
 
   QFont nameFont(QStringLiteral("Microsoft YaHei"), 18, QFont::Bold);

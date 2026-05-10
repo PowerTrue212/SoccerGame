@@ -3,6 +3,7 @@
 #include <QApplication>
 #include <QDebug>
 #include <QGraphicsDropShadowEffect>   // 用于按钮阴影
+#include <QLabel>
 
 MenuScreen::MenuScreen(QWidget* parent)
     : QWidget(parent),
@@ -10,6 +11,12 @@ MenuScreen::MenuScreen(QWidget* parent)
     exitButton(new QPushButton("退出", this))
 {
     setObjectName("menuScreen");
+
+    auto* titleLabel = new QLabel("SoccerGame", this);
+    QFont titleFont("Microsoft YaHei", 48, QFont::Bold);
+    titleLabel->setFont(titleFont);
+    titleLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    titleLabel->setStyleSheet("color: white;");
 
     // ---------- 大小 ----------
     startButton->setFixedSize(250, 120);
@@ -88,6 +95,8 @@ MenuScreen::MenuScreen(QWidget* parent)
     // ---------- 布局 ----------
     auto* layout = new QVBoxLayout(this);
     layout->addStretch();
+    layout->addWidget(titleLabel, 0, Qt::AlignHCenter);
+    layout->addSpacing(80);
     layout->addWidget(startButton, 0, Qt::AlignHCenter);
     layout->addSpacing(150);
     layout->addWidget(exitButton, 0, Qt::AlignHCenter);

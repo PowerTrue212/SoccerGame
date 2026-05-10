@@ -63,8 +63,11 @@ void MainWindow::startGameWithPlayers(int p1Type, int p2Type)
 
 void MainWindow::showEndGameScreen(int score1, int score2)
 {
+    const int player1Type = gameScreen->getPlayer1Type();
+    const int player2Type = gameScreen->getPlayer2Type();
+
     if (!endGameScreen) {
-        endGameScreen = new EndGameScreen(score1, score2, this);
+        endGameScreen = new EndGameScreen(score1, score2, player1Type, player2Type, this);
         stackedWidget->addWidget(endGameScreen);
         connect(endGameScreen, &EndGameScreen::playAgain, this, &MainWindow::replayLastMatch);
         connect(endGameScreen, &EndGameScreen::backToMenu, this, &MainWindow::showMenuScreen);
@@ -75,10 +78,10 @@ void MainWindow::showEndGameScreen(int score1, int score2)
         });
     }
     else {
-        endGameScreen->setResult(score1, score2);
+        endGameScreen->setResult(score1, score2, player1Type, player2Type);
     }
 
-    const int winnerType = (score1 > score2) ? gameScreen->getPlayer1Type() : (score2 > score1) ? gameScreen->getPlayer2Type() : -1;
+    const int winnerType = (score1 > score2) ? player1Type : (score2 > score1) ? player2Type : -1;
     const QString videoSource = celebrationVideoForPlayer(winnerType);
     endGameScreen->playCelebrationVideo(videoSource);
     stopBackgroundAudio();
@@ -106,9 +109,9 @@ QString MainWindow::celebrationVideoForPlayer(int playerType) const
     case 3:
         return "qrc:/SoccerGame/music/haland_.mp4";
     case 4:
-        return "qrc:/SoccerGame/music/kane_.mp4";
-    case 5:
         return "qrc:/SoccerGame/music/dembele_.mp4";
+    case 5:
+        return "qrc:/SoccerGame/music/kane_.mp4";
     default:
         return QString();
     }

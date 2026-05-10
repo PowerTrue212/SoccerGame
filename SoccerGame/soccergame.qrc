@@ -13,7 +13,6 @@
         <file>image/FCB.png</file>
         <file>image/MCI.png</file>
         <file>image/PSG.png</file>
-        <file>image/soccer.png</file>
         <file>music/alvarez_.mp4</file>
         <file>music/dembele_.mp4</file>
         <file>music/enzo_.mp4</file>
@@ -25,5 +24,6 @@
     </qresource>
     <qresource prefix="/images">
         <file>image/background.png</file>
+        <file>image/soccer.png</file>
     </qresource>
 </RCC>

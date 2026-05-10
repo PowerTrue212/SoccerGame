@@ -29,12 +29,34 @@ void SoccerGame::paintEvent(QPaintEvent* event) {
 
 	///painter.fillRect(rect(), QColor(135, 206, 235));
 	//painter.fillRect(0, Constants::GroundLevel, width(), height() - Constants::GroundLevel, QColor(80, 180, 80));
-	painter.setBrush(Qt::NoBrush);
-	painter.setPen(QPen(Qt::white, 3));
-	painter.drawRect(0, Constants::GroundLevel - Constants::GoalHeight, Constants::GoalWidth, Constants::GoalHeight);
-	painter.drawRect(Constants::WindowWidth - Constants::GoalWidth, Constants::GroundLevel - Constants::GoalHeight, Constants::GoalWidth, Constants::GoalHeight);
-	painter.fillRect(0, Constants::GroundLevel - Constants::GoalHeight - Constants::GoalBarThickness, Constants::GoalWidth, Constants::GoalBarThickness, QColor(220, 220, 220));
-	painter.fillRect(Constants::WindowWidth - Constants::GoalWidth, Constants::GroundLevel - Constants::GoalHeight - Constants::GoalBarThickness, Constants::GoalWidth, Constants::GoalBarThickness, QColor(220, 220, 220));
+  painter.setBrush(Qt::NoBrush);
+	QPen goalPen(QColor(245, 245, 245), 5);
+	goalPen.setCapStyle(Qt::RoundCap);
+	painter.setPen(goalPen);
+
+	const QRect leftGoalRect(0, Constants::GroundLevel - Constants::GoalHeight, Constants::GoalWidth, Constants::GoalHeight);
+	const QRect rightGoalRect(Constants::WindowWidth - Constants::GoalWidth, Constants::GroundLevel - Constants::GoalHeight, Constants::GoalWidth, Constants::GoalHeight);
+
+	painter.drawRect(leftGoalRect);
+	painter.drawRect(rightGoalRect);
+
+	QColor netColor(255, 255, 255, 120);
+	QPen netPen(netColor, 1);
+	painter.setPen(netPen);
+	const int netSpacing = 18;
+	for (int x = 0; x <= Constants::GoalWidth; x += netSpacing) {
+		painter.drawLine(leftGoalRect.left() + x, leftGoalRect.top(), leftGoalRect.left() + x, leftGoalRect.bottom());
+		painter.drawLine(rightGoalRect.left() + x, rightGoalRect.top(), rightGoalRect.left() + x, rightGoalRect.bottom());
+	}
+	for (int y = 0; y <= Constants::GoalHeight; y += netSpacing) {
+		painter.drawLine(leftGoalRect.left(), leftGoalRect.top() + y, leftGoalRect.right(), leftGoalRect.top() + y);
+		painter.drawLine(rightGoalRect.left(), rightGoalRect.top() + y, rightGoalRect.right(), rightGoalRect.top() + y);
+	}
+
+	painter.setPen(Qt::NoPen);
+	painter.setBrush(QColor(230, 230, 230));
+	painter.drawRect(0, Constants::GroundLevel - Constants::GoalHeight - Constants::GoalBarThickness, Constants::GoalWidth, Constants::GoalBarThickness);
+	painter.drawRect(Constants::WindowWidth - Constants::GoalWidth, Constants::GroundLevel - Constants::GoalHeight - Constants::GoalBarThickness, Constants::GoalWidth, Constants::GoalBarThickness);
 	
 	player1->DrawPlayer(&painter);
 	player2->DrawPlayer(&painter);

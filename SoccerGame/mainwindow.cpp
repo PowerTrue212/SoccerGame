@@ -11,6 +11,8 @@
 #include <QPushButton>
 #include <QStackedWidget>
 #include <QString>
+#include <QShortcut>
+#include <QKeySequence>
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent),
@@ -38,6 +40,12 @@ MainWindow::MainWindow(QWidget* parent)
     connect(playerSelectScreen, &PlayerSelectScreen::backToMenu, this, &MainWindow::showMenuScreen);
     connect(playerSelectScreen, &PlayerSelectScreen::playersSelected, this, &MainWindow::startGameWithPlayers);
     connect(gameScreen, &SoccerGame::gameFinished, this, &MainWindow::showEndGameScreen);
+
+    auto* debugShortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_E), this);
+    connect(debugShortcut, &QShortcut::activated, this, [this]() {
+        gameScreen->setPlayers(0, 1);
+        showEndGameScreen(2, 1);
+    });
 }
 
 void MainWindow::showPlayerSelectScreen()

@@ -143,11 +143,22 @@ void SoccerGame::setPlayers(int p1Type, int p2Type)
 		":/SoccerGame/image/player_6.png"
 	};
 
+	const QString bodies[] = {
+		":/SoccerGame/image/CHE.png",
+		":/SoccerGame/image/ATM.png",
+		":/SoccerGame/image/ARS.png",
+		":/SoccerGame/image/MCI.png",
+		":/SoccerGame/image/PSG.png",
+		":/SoccerGame/image/FCB.png"
+	};
+
 	if (p1Type >= 0 && p1Type < 6) {
 		player1->setHeadshot(QPixmap(headshots[p1Type]));
+       player1->setBody(QPixmap(bodies[p1Type]));
 	}
 	if (p2Type >= 0 && p2Type < 6) {
 		player2->setHeadshot(QPixmap(headshots[p2Type]));
+       player2->setBody(QPixmap(bodies[p2Type]));
 	}
 }
 

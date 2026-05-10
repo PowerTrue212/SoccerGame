@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <QtWidgets/QWidget>
 #include <QPixmap>
@@ -22,6 +22,7 @@ signals:
 private:
     QPixmap background;
     QVector<QPixmap> headshots;
+    QVector<QPixmap> bodies;
     int player1Index = 0;
     int player2Index = 0;
 };

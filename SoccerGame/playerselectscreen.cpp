@@ -18,6 +18,15 @@ PlayerSelectScreen::PlayerSelectScreen(QWidget* parent)
         QPixmap(":/SoccerGame/image/player_5.png"),
         QPixmap(":/SoccerGame/image/player_6.png")
     };
+
+    bodies = {
+        QPixmap(":/SoccerGame/image/CHE.png"),
+        QPixmap(":/SoccerGame/image/ATM.png"),
+        QPixmap(":/SoccerGame/image/ARS.png"),
+        QPixmap(":/SoccerGame/image/MCI.png"),
+        QPixmap(":/SoccerGame/image/PSG.png"),
+        QPixmap(":/SoccerGame/image/FCB.png")
+    };
 }
 
 void PlayerSelectScreen::paintEvent(QPaintEvent* event)
@@ -60,6 +69,7 @@ void PlayerSelectScreen::paintEvent(QPaintEvent* event)
         preview.pos = QPointF(centerX, headCenterY);
         preview.playerface = 1;
         preview.setHeadshot(headshots[i]);
+        preview.setBody(bodies[i]);
         preview.DrawPlayer(&painter);
 
         painter.drawText(QRectF(centerX - slotWidth * 0.5, groundY + 8, slotWidth, 40), Qt::AlignHCenter | Qt::AlignTop, names[i]);

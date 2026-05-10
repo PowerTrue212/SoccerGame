@@ -2,6 +2,7 @@
 
 #include <QPointF>
 #include <QPainter>
+#include <QPixmap>
 
 class Ball
 {
@@ -15,6 +16,7 @@ public:
 	QPointF prevPos; // 上一个位置，用于检测连续碰撞
 	QPointF velocity;
 	QPointF acceleration;
+	QPixmap sprite;
 
 	bool onGround = false;
 };

@@ -17,10 +17,24 @@ void Player::setHeadshot(const QPixmap& pixmap)
 	headshot = pixmap;
 }
 
+void Player::setBody(const QPixmap& pixmap)
+{
+	body = pixmap;
+}
+
 void Player::DrawPlayer(QPainter* painter)const {
-	painter->setBrush(Qt::blue);
-	painter->drawRect(pos.x() - Constants::PlayerBodyWidth * 0.5f, pos.y() + Constants::PlayerRadius,
-		Constants::PlayerBodyWidth, Constants::PlayerBodyHeight);
+    const QRectF bodyRect(
+		pos.x() - Constants::PlayerBodyWidth * 0.5,
+		pos.y() + Constants::PlayerRadius,
+		Constants::PlayerBodyWidth,
+		Constants::PlayerBodyHeight);
+
+	if (!body.isNull()) {
+		painter->drawPixmap(bodyRect.toRect(), body);
+	} else {
+		painter->setBrush(Qt::blue);
+		painter->drawRect(bodyRect);
+	}
 
 	const double headScale = 1.25;
 	const double headSize = Constants::PlayerRadius * 2.0 * headScale;
